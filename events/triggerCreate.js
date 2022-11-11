@@ -37,12 +37,12 @@ module.exports = {
 		message.client.triggers.every((trigger) => {
 			if (triggered) return false;
 
-			trigger.name.every(async (name) => {
+			trigger.name.every(async (phrase) => {
 				if (triggered) return false;
 
 				// If validated, it will try to execute the trigger.
 
-				if (message.content.includes(name)) {
+				if (message.content.includes(phrase)) {
 					try {
 						trigger.execute(message, args);
 					} catch (error) {

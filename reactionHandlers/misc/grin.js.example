@@ -1,0 +1,11 @@
+module.exports = {
+	name: "grin-emoji",
+
+	execute(reaction, user) {
+		if (reaction._emoji.name === '😁') {
+      reaction.message.channel.send({
+        content: `Glad to see you :grin:, ${user.username}`
+      });
+    }
+	},
+};

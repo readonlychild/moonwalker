@@ -1,11 +1,5 @@
-/**
- * @file Main File of the bot, responsible for registering events, commands, interactions etc.
- * @author Naman Vrati
- * @since 1.0.0
- * @version 3.3.0
- */
-
 // Declare constants which will be used throughout the bot.
+require('dotenv').config();
 
 const fs = require("fs");
 const {
@@ -28,11 +22,12 @@ const client = new Client({
 	// Please add all intents you need, more detailed information @ https://ziad87.net/intents/
 	intents: [
 		GatewayIntentBits.Guilds,
-		GatewayIntentBits.DirectMessages,
+		//GatewayIntentBits.DirectMessages,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMessageReactions,
 	],
-	partials: [Partials.Channel],
+	partials: [Partials.Channel, Partials.Message, Partials.Reaction],
 });
 
 /**********************************************************************/
@@ -72,6 +67,7 @@ client.modalCommands = new Collection();
 client.cooldowns = new Collection();
 client.autocompleteInteractions = new Collection();
 client.triggers = new Collection();
+client.reactionHandlers = new Collection();
 
 /**********************************************************************/
 // Registration of Message-Based Legacy Commands.
@@ -292,6 +288,20 @@ for (const folder of triggerFolders) {
 	for (const file of triggerFiles) {
 		const trigger = require(`./triggers/${folder}/${file}`);
 		client.triggers.set(trigger.name, trigger);
+	}
+}
+
+/**********************************************************************/
+// Registration of Message Reaction Handlers
+
+const reactionHandlerFolders = fs.readdirSync('./reactionHandlers');
+for (const folder of reactionHandlerFolders) {
+	const reactionFiles = fs.readdirSync(`./reactionHandlers/${folder}`)
+		.filter((file) => file.endsWith('.js'));
+	for (const file of reactionFiles) {
+		const reaction = require(`./reactionHandlers/${folder}/${file}`);
+		client.reactionHandlers.set(reaction.name, reaction);
+		console.log('loaded reactionHandler', folder, file, reaction.name);
 	}
 }
 
