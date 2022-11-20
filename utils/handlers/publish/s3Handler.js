@@ -1,5 +1,5 @@
-const { publishConfig } = require('./../../../config.json');
 const store = require('./../../../store/store-s3.js');
+const moment = require('moment');
 
 const handler = {
   type: 'S3',
@@ -11,14 +11,16 @@ const handler = {
       .then((titlemap) => {
 
         if (!titlemap) {
-          console.log('HANDLER - no titlemap o_O');
+          console.log('HANDLER[s3] - no titlemap o_O');
           resolve(false);
           return;
         }
 
         titlemap[`m${postData.channelId}`] = {
-          title: postData.title,
-          cat: postData.cat
+          title: postData.title || postData.name,
+          cat: postData.cat,
+          published: moment().format(),
+          tags: postData.tags
         };
 
         console.log('titlemap', titlemap);

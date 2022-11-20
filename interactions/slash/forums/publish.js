@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { publishPost, fakeUser, embeds, config } = require('./../../../utils');
+const { publishPost, fakeUser, embeds } = require('./../../../utils');
+const guildSettings = require('./../../../guildSettings.js');
 
 module.exports = {
 
@@ -10,7 +11,7 @@ module.exports = {
       option
         .setName('title')
         .setDescription('Title the thread')
-        .setRequired(true)
+        .setRequired(false)
     )
     .addStringOption(option =>
       option
@@ -19,9 +20,9 @@ module.exports = {
         .setRequired(false)
     ),
 
-	async execute(interaction) {
+	async execute (interaction) {
 
-		let title = interaction.options.getString("title");
+		let title = interaction.options.getString("title") || '';
 		let cat = interaction.options.getString("category") || '';
     let channel = interaction.channel;
 
@@ -34,15 +35,18 @@ module.exports = {
       return;
     }
 
-    if (!config.publishConfig.publishers) {
+    const settings = await guildSettings.get(interaction.guildId);
+    settings.publish = settings.publish || {};
+
+    if (!settings.publish.publishers) {
       await interaction.reply({
-        embeds: [embeds.warning('Setting up a publishers role is required.')]
+        embeds: [embeds.warning('Setting up a **publishers** role is required.')]
       });
       return;
     }
 
     const member = interaction.member;
-    if (!member.roles.cache.has(confg.publishConfig.publishers.id)) {
+    if (!member.roles.cache.has(settings.publish.publishers?.id)) {
       await interaction.reply({
         embeds: [embeds.fail('You do not have the proper role.')]
       });
@@ -79,7 +83,7 @@ module.exports = {
 
     messages.forEach((msg) => {
       if (msg.content) {
-        postData.messages.push(getMsgFromMessage(msg, involvedUsers, config.publishConfig));
+        postData.messages.push(getMsgFromMessage(msg, involvedUsers, settings.publish));
       }
     });
 
@@ -110,7 +114,7 @@ function getMsgFromMessage (discordMessage, involvedUsers, settings) {
     avatar: `https://cdn.discordapp.com/avatars/${discordMessage.author.id}/${discordMessage.author.avatar}.png?size=80`,
     discrim: discordMessage.author.discriminator
   };
-  if (settings.anonymize === '1') {
+  if (settings.anonymize === true) {
     let unmasked = false;
     if (discordMessage.member?.roles.cache.find(r => settings.unmaskRole?.id === r.id)) unmasked = true;
     if (!unmasked) {

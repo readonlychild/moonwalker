@@ -26,7 +26,7 @@ const utils = {
     success: ':white_check_mark:',
     fail: ':anger:',
     warning: ':warning:',
-    info: ':information_source'
+    info: ':information_source:'
   },
   embeds: {
     success: function (content, title = '') {

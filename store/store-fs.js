@@ -10,7 +10,7 @@ const store = {
       let path = id;
       if (id.toString().length > 5) {
         path = `./records/${id.substr(0,2)}/${id.substr(2,2)}/${id}.json`;
-        self._ensureDirectorExistence(`${path}`);
+        self._ensureDirectoryExistence(`${path}`);
       } else {
         path += '.json';
       }
@@ -50,7 +50,7 @@ const store = {
       let path = id;
       if (id.toString().length > 5) {
         path = `./records/${id.substr(0,2)}/${id.substr(2,2)}/${id}.json`;
-        self._ensureDirectorExistence(`${path}`);
+        self._ensureDirectoryExistence(`${path}`);
       } else {
         path += '.json';
       }
@@ -60,10 +60,10 @@ const store = {
       });
     });
   },
-  _ensureDirectorExistence (filePath) {
+  _ensureDirectoryExistence (filePath) {
     let dirname = path.dirname(filePath);
     if (fs.existsSync(dirname)) return true;
-    this._ensureDirectorExistence(dirname);
+    this._ensureDirectoryExistence(dirname);
     fs.mkdirSync(dirname);
   }
 };

@@ -1,4 +1,3 @@
-// Declare constants which will be used throughout the bot.
 require('dotenv').config();
 
 const fs = require("fs");
