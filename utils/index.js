@@ -88,7 +88,7 @@ const utils = {
       discrim: '9999'
     };
     fake.username = utils.fakeName();
-    fake.avatar = utils.fakeAvatar(fake.name);
+    fake.avatar = utils.fakeAvatar(fake.username);
     return fake;
   }
 };
